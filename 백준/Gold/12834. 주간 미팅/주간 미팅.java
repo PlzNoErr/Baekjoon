@@ -41,10 +41,10 @@ public class Main {
         }
 
         int ans = 0;
-        for (int member : members) {
-            dijkstra(member);
-            for (int des : destins) {
-                if (dist[des] != INF) ans += dist[des];
+        for (int des : destins) {
+            dijkstra(des);
+            for (int member : members) {
+                if (dist[member] != INF) ans += dist[member];
                 else ans--;
             }
         }
