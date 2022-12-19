@@ -55,9 +55,8 @@ public class Main {
     static void dijkstra(int start) {
         // dist배열을 초기화 & 시작지점 0으로 초기화
         dist = new int[v + 1];
-        for (int i = 1; i <= v; i++) {
-            Arrays.fill(dist, INF);
-        }
+        Arrays.fill(dist, INF);
+
         dist[start] = 0;
         PriorityQueue<Node> PQ = new PriorityQueue<>((n1, n2) -> n1.cost - n2.cost);
         PQ.add(new Node(start, 0));
