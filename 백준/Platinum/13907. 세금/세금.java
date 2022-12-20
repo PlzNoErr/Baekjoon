@@ -65,7 +65,14 @@ public class Main {
             Node node = PQ.poll();
             if (dist[node.time][node.vt] < node.cost) continue;
 
+            here:
             for (Node target : list.get(node.vt)) {
+                for (int i = 0; i <= node.time; i++) {
+                    if (node.cost + target.cost > dist[i][target.vt]) {
+                        continue here;
+                    }
+                }
+
                 if (node.time + 1 <= v && dist[node.time + 1][target.vt] > dist[node.time][node.vt] + target.cost) {
                     dist[node.time + 1][target.vt] = dist[node.time][node.vt] + target.cost;
                     PQ.add(new Node(target.vt, dist[node.time + 1][target.vt], node.time + 1));
