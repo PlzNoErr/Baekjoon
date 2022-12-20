@@ -58,15 +58,15 @@ public class Main {
     static void dijkstra(int start) {
         dist = new int[v + 1][v + 1];
         for (int[] arr : dist) Arrays.fill(arr, INF);
-        for (int i = 0; i < v; i++) dist[i][start] = 0;
+        dist[0][start] = 0;
         PriorityQueue<Node> PQ = new PriorityQueue<>((n1, n2) -> n1.cost - n2.cost);
         PQ.add(new Node(start, 0, 0));
         while (!PQ.isEmpty()) {
             Node node = PQ.poll();
-            if (dist[node.time][node.vt] < node.cost || node.time == v) continue;
+            if (dist[node.time][node.vt] < node.cost) continue;
 
             for (Node target : list.get(node.vt)) {
-                if (dist[node.time + 1][target.vt] > dist[node.time][node.vt] + target.cost) {
+                if (node.time + 1 <= v && dist[node.time + 1][target.vt] > dist[node.time][node.vt] + target.cost) {
                     dist[node.time + 1][target.vt] = dist[node.time][node.vt] + target.cost;
                     PQ.add(new Node(target.vt, dist[node.time + 1][target.vt], node.time + 1));
                 }
