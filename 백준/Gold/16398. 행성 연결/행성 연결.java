@@ -36,12 +36,15 @@ public class Main {
 
         // 크루스칼 알고리즘을 활용해서 최소 비용을 도출하자.
         long min_cost = 0L;
+        int count = 0;
         while (!PQ.isEmpty()) {
             Node node = PQ.poll();
             if (find(node.from) != find(node.to)) {
                 union(node.to, node.from);
                 min_cost += node.cost;
+                count++;
             }
+            if (count == n - 1) break;
         }
 
         System.out.println(min_cost);
