@@ -55,7 +55,7 @@ public class Main {
         if (Parent[x] == x) {
             return x;
         } else {
-            return find(Parent[x]);
+            return Parent[x] = find(Parent[x]);
         }
     }// find
 
