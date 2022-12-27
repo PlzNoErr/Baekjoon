@@ -1,10 +1,10 @@
 # [level 0] 겹치는 선분의 길이 - 120876 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120876?language=cpp) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/120876?language=javascript) 
 
 ### 성능 요약
 
-메모리: 4.2 MB, 시간: 0.01 ms
+메모리: 33.4 MB, 시간: 0.08 ms
 
 ### 구분
 
