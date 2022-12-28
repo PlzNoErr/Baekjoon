@@ -1,14 +1,7 @@
 function solution(my_str, n) {
-    let answer = [];
-    let count = 0;
-    while (true) {
-        if (count + n >= my_str.length) {
-            answer.push(my_str.substring(count));
-            break;
-        }
-        answer.push(my_str.substring(count, count + n));
-        count += n;
+    var answer = [];
+    for(let i=0;i<my_str.length;i+=n){
+        answer.push(my_str.slice(i,i+n))
     }
-
     return answer;
 }
