@@ -28,9 +28,12 @@ public class Main {
                     int r = i + dr[k];
                     int c = j + dc[k];
                     if (r < 0 || H <= r || c < 0 || W <= c) continue;
-                    if (k == 0 && map[r][c] != 'E') {
+                    if (k == 0){
+                        if(map[r][c] != 'E') {
                         dp[i][j] += dp[r][c];
                         dp[i][j] %= MD;
+                        }
+                         continue;
                     }
                     if (k == 1 && map[r][c] != 'S') {
                         dp[i][j] += dp[r][c];
