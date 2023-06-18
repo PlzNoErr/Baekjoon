@@ -1,101 +1,92 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-	final static int INF = Integer.MAX_VALUE / 10;
-	static ArrayList<ArrayList<Node>> list;
-	static int[][] dist;
-	static int total_cost;
+	private static List<Edge>[] graph;
+	private static int N, M;
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int tc = Integer.parseInt(br.readLine());
-		StringBuilder sb = new StringBuilder();
-		while (tc-- > 0) {
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+		int T = Integer.parseInt(br.readLine());
+		while (T-- > 0) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			// 정점의 수 v, 간선의 수 e
-			int v = Integer.parseInt(st.nextToken());
-			total_cost = Integer.parseInt(st.nextToken());
-			int e = Integer.parseInt(st.nextToken());
+			N = Integer.parseInt(st.nextToken());
+			M = Integer.parseInt(st.nextToken());
+			int K = Integer.parseInt(st.nextToken());
 
-			list = new ArrayList<>();
-			for (int i = 0; i <= v; i++) {
-				list.add(new ArrayList<>());
-			}
-
-			for (int i = 0; i < e; i++) {
+			graph = new List[N + 1];
+			for (int i = 1; i <= N; i++)
+				graph[i] = new ArrayList<Edge>();
+			while (K-- > 0) {
 				st = new StringTokenizer(br.readLine());
-				int x = Integer.parseInt(st.nextToken());
-				int y = Integer.parseInt(st.nextToken());
-				int cost = Integer.parseInt(st.nextToken());
-				int time = Integer.parseInt(st.nextToken());
-				list.get(x).add(new Node(y, cost, time));
+				int u = Integer.parseInt(st.nextToken());
+				int v = Integer.parseInt(st.nextToken());
+				int w = Integer.parseInt(st.nextToken());
+				int t = Integer.parseInt(st.nextToken());
+				graph[u].add(new Edge(v, w, t));
 			}
-			// 최단경로를 알아내기 위해서 다익스트라 시행
-			dist = new int[total_cost + 1][v + 1];
-			dijkstra(1);
-
-			int min = Integer.MAX_VALUE;
-			for (int i = 0; i <= total_cost; i++) {
-				min = Math.min(min, dist[i][v]);
-			}
-
-			if (min == INF)
-				System.out.println("Poor KCM");
-			else
-				System.out.println(min);
-
-		} // tc
-	}// main
-
-	static void dijkstra(int start) {
-		// dist배열을 초기화 & 시작지점 0으로 초기화
-		for (int i = 0; i <= total_cost; i++) {
-			Arrays.fill(dist[i], INF);
+			bw.write(dijkstra());
 		}
-		dist[0][start] = 0;
+		bw.close();
+	}
 
-		PriorityQueue<Node> PQ = new PriorityQueue<>(new Comparator<Node>() {
+	private static String dijkstra() {
+		Queue<Edge> pq = new PriorityQueue<>(new Comparator<Edge>() {
 			@Override
-			public int compare(Node e1, Node e2) {
-				return e1.time - e2.time;
+			public int compare(Edge o1, Edge o2) {
+				return Integer.compare(o1.weight, o2.weight);
 			}
 		});
-		PQ.add(new Node(start, 0, 0));
-		while (!PQ.isEmpty()) {
-			Node node = PQ.poll();
+		int[][] dist = new int[M + 1][N + 1];
+		for (int i = 0; i <= M; i++) {
+			Arrays.fill(dist[i], Integer.MAX_VALUE);
+			dist[i][1] = 0;
+		}
+		pq.add(new Edge(1, 0, 0));
 
-			// check배열은 사용하지 마라. 이렇게 value비교로 거르는게 더 맞는 방식이다
-			if (dist[node.cost][node.vt] < node.time)
+		int answer = Integer.MAX_VALUE;
+		while (!pq.isEmpty()) {
+			Edge u = pq.poll();
+			if (answer <= dist[u.weight][u.vertex])
 				continue;
 
-			for (int i = 0; i < list.get(node.vt).size(); i++) {
-				Node target = list.get(node.vt).get(i);
-				// 더 빠른 경로를 추종하는 건 좋지만 그 경로의 비용이 총 비용을 넘어서서는 안된다.
-				if (node.cost + target.cost <= total_cost
-						&& dist[node.cost + target.cost][target.vt] > dist[node.cost][node.vt] + target.time) {
-					dist[node.cost + target.cost][target.vt] = dist[node.cost][node.vt] + target.time;
-					PQ.add(new Node(target.vt, node.cost + target.cost, dist[node.cost + target.cost][target.vt]));
+			for (Edge v : graph[u.vertex]) {
+				int cost = u.weight + v.weight;
+				if (cost > M)
+					continue;
+
+				int time = dist[u.weight][u.vertex] + v.time;
+				if (answer <= time)
+					continue;
+                
+				if (v.vertex == N) {
+					answer = time;
+					continue;
+				}
+                
+				if (time < dist[cost][v.vertex]) {
+					if (dist[cost][v.vertex] == Integer.MAX_VALUE)
+						pq.add(new Edge(v.vertex, cost, time));
+					dist[cost][v.vertex] = time;
 				}
 			}
 		}
-	}//
 
-	static class Node {
-		int vt, cost, time;
+		if (answer == Integer.MAX_VALUE)
+			return "Poor KCM";
+		return String.valueOf(answer);
+	}
 
-		public Node(int vt, int cost, int time) {
-			this.vt = vt;
-			this.cost = cost;
+	private static class Edge {
+		public int vertex, weight, time;
+
+		public Edge(int vertex, int weight, int time) {
+			this.vertex = vertex;
+			this.weight = weight;
 			this.time = time;
 		}
-	}//
-
+	}
 }
