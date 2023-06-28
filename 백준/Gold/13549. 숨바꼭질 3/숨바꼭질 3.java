@@ -1,54 +1,38 @@
-import java.util.LinkedList;
-import java.util.Scanner;
-
-public class Main {
-
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int m = sc.nextInt();
-		sc.close();
-		int max = 100000;
-		int[] Arr = new int[max + 1];
-		boolean[] check = new boolean[max + 1];
-
-		if (m <= n) {
-			System.out.println(n - m);
-			return;
-		}
-
-		LinkedList<Integer> Q = new LinkedList<>();
-		Q.add(n);
-		check[n] = true;
-		while (!Q.isEmpty()) {
-			int v = Q.pollFirst();
-			int a = v + 1;
-			int b = v - 1;
-			int c = 2 * v;
-
-			if (c <= max && !check[c] && c < 2 * m) {
-				Arr[c] = Arr[v];
-				check[c] = true;
-				Q.addFirst(c);
-			}
-			if (a <= m && !check[a]) {
-				Arr[a] = Arr[v] + 1;
-				check[a] = true;
-				Q.addLast(a);
-			}
-			if (0 <= b && !check[b]) {
-				Arr[b] = Arr[v] + 1;
-				check[b] = true;
-				Q.addLast(b);
-			}
-			if (a == m || b == m || c == m) {
-				check[m] = false;
-				break;
-			}
-		}
-		
-		
-		System.out.println(Arr[m]);
-
-	}// main
+import java.util.*;
+ 
+public class Main {    
+ 
+    static int min = Integer.MAX_VALUE;
+    static int n, k;
+    static boolean[] visited;
+    static int max = 100000;
+    
+    public static void main(String args[]) {
+        Scanner scan = new Scanner(System.in);
+        
+        n = scan.nextInt();
+        k = scan.nextInt();
+        
+        visited = new boolean[max + 1];
+        Queue<Node> q = new LinkedList<>();
+        q.offer(new Node(n, 0));     
+        while(!q.isEmpty()) {
+            Node node = q.poll();
+            visited[node.x] = true;
+            if(node.x == k) min = Math.min(min, node.time);
+            if(node.x * 2 <= max && visited[node.x * 2] == false) q.offer(new Node(node.x * 2, node.time));
+            if(node.x + 1 <= max && visited[node.x + 1] == false) q.offer(new Node(node.x + 1, node.time + 1));
+            if(node.x - 1 >= 0 && visited[node.x - 1] == false) q.offer(new Node(node.x - 1, node.time + 1));
+        }
+        System.out.println(min);
+    }
+    
+    static class Node {
+        int x;
+        int time;
+        public Node(int x, int time) {
+            this.x = x;
+            this.time = time;
+        }
+    }
 }
